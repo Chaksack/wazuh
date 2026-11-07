@@ -1,6 +1,8 @@
 FROM wazuh-base
 
 COPY preloaded-vars.conf /wazuh/etc/preloaded-vars.conf
+# wazuh-base only fetches the manager's dependencies; add the agent-only ones
+RUN cd /wazuh/src && make deps TARGET=agent -j$(nproc)
 RUN THREADS=$(nproc) /wazuh/install.sh
 
 ADD entrypoint.sh /scripts/entrypoint.sh
